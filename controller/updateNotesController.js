@@ -4,7 +4,8 @@ import { encryptSymmetric } from '../utils/aes.js';
 
 export const updateNotes = async (req, res) => {
     try {
-        const { noteId, title, content } = req.body;
+        const { title, content } = req.body;
+        const noteId = req.params.id;
         const userId = req.user.user_id;
         const encryptedContent = encryptSymmetric(content);
         const updateResult = await pool.query(

@@ -3,7 +3,7 @@ import pool from '../configs/database.js';
 
 export const deleteNotes = async (req, res) => {
     try {
-        const { noteId } = req.body;
+        const noteId = req.params.id;
         const userId = req.user.user_id;
         const deleteResult = await pool.query(
             `DELETE FROM notes

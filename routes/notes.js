@@ -9,7 +9,7 @@ const router = express.Router();
 
 router.get('/', authenticateToken,getNotes);
 router.post('/add',authenticateToken,addNotes);
-router.delete('/delete', authenticateToken, deleteNotes);
-router.patch('/update',authenticateToken,updateNotes);
+router.delete('/delete/:id', authenticateToken, deleteNotes);
+router.patch('/update/:id',authenticateToken,updateNotes);
 
 export default router;
