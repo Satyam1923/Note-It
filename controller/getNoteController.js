@@ -1,25 +1,27 @@
-import express from 'express';
 import pool from '../configs/database.js';
+import { decryptSymmetric } from '../utils/aes.js';
 
 export const getNotes = async (req, res) => {
     try {
-        const { email } = req.body;
-        const userResult = await pool.query(
-            'SELECT user_id FROM users WHERE email = $1',
-            [email]
-        );
-        if (userResult.rows.length === 0) {
-            return res.status(404).json({ error: "User not found" });
-        }
-        const userId = userResult.rows[0].user_id;
+        const userId = req.user.user_id;
         const notesResult = await pool.query(
             'SELECT * FROM notes WHERE user_id = $1 ORDER BY created_at DESC',
             [userId]
         );
-
+        
+        const decryptedNotes = notesResult.rows.map((note) => {
+            return {
+                note_id: note.note_id,
+                user_id: note.user_id,
+                title: note.title,
+                content: decryptSymmetric(note.content), 
+                created_at: note.created_at,
+                updated_at: note.updated_at
+            };
+        });
         res.status(200).json({
-            user: userResult.rows[0],
-            notes: notesResult.rows
+            user: userId,
+            notes: decryptedNotes
         });
 
     } catch (error) {

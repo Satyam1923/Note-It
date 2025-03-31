@@ -1,35 +1,18 @@
 import pool from '../configs/database.js';
+import { encryptSymmetric } from '../utils/aes.js';
+
 
 export const updateNotes = async (req, res) => {
     try {
-        const { email, noteId, title, content } = req.body;
-        if (!email || !noteId) {
-            return res.status(400).json({
-                success: false,
-                error: "Missing required fields",
-                message: "Email and note ID are required"
-            });
-        }
-        const userResult = await pool.query(
-            'SELECT user_id FROM users WHERE email = $1',
-            [email]
-        );
-
-        if (userResult.rows.length === 0) {
-            return res.status(404).json({
-                success: false,
-                error: "User not found",
-                message: "No user exists with the provided email"
-            });
-        }
-
-        const userId = userResult.rows[0].user_id;
+        const { noteId, title, content } = req.body;
+        const userId = req.user.user_id;
+        const encryptedContent = encryptSymmetric(content);
         const updateResult = await pool.query(
             `UPDATE notes
             SET title = $1, content = $2
             WHERE note_id = $3 AND user_id = $4
             RETURNING note_id, title`,
-            [title, content, noteId, userId]
+            [title, encryptedContent, noteId, userId]
         );
 
         if (updateResult.rowCount === 0) {
