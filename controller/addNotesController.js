@@ -1,5 +1,6 @@
 import express from 'express';
 import pool from '../configs/database.js';
+import bcrypt from 'bcrypt';
 
 export const addNotes = async (req, res) => {
     try {
@@ -23,7 +24,6 @@ export const addNotes = async (req, res) => {
                 message: "No user exists with the provided email"
             });
         }
-
         const userId = userResult.rows[0].user_id;
         const insertResult = await pool.query(
             `INSERT INTO notes (user_id, title, content) 
