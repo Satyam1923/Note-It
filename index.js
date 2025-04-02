@@ -24,3 +24,5 @@ app.use('/notes', notes);
 app.listen(port, () => {
     console.log(`API is listening on port number ${port}`);
 });
+
+export default app;

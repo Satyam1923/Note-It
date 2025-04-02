@@ -10,6 +10,7 @@ import { deleteNotes } from '../controller/deleteNotesController.js';
 import { toggleFavouriteNote } from '../controller/toggleFavouriteNotesController.js';
 import { generateShareLink } from '../controller/generateShareLinkController.js';
 import { acceptSharedNote } from '../controller/acceptShareNote.js';
+import { duplicateNote } from '../controller/duplicateNoteController.js';
 
 const router = express.Router();
 
@@ -19,6 +20,7 @@ router.get('/:id', authenticateToken, getNotesById);
 
 router.post('/add', authenticateToken, addNotes);
 router.post('/bulk-add', authenticateToken, bulkAddNotes);
+router.post('/duplicate/:id',authenticateToken,duplicateNote)
 
 router.patch('/update/:id', authenticateToken, updateNotes);
 
